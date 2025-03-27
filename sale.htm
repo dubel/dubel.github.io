@@ -1,0 +1,359 @@
+<!doctype html>
+<html lang="pl">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>el Dublo sale!</title>
+        <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css"
+        />
+        <style>
+            body {
+                background-color: #0d47a1;
+                color: white;
+                font-family: "Roboto", sans-serif;
+                text-align: center;
+                padding: 20px;
+            }
+            .gallery {
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            .item {
+                background: white;
+                color: black;
+                margin: 15px;
+                padding: 15px;
+                border-radius: 10px;
+                width: 300px;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+                position: relative;
+            }
+            .sold-item {
+                position: relative;
+                opacity: 0.6;
+            }
+            .carousel {
+                position: relative;
+                width: 100%;
+            }
+            .carousel img {
+                width: 100%;
+                border-radius: 5px;
+                display: none;
+            }
+            .carousel img.active {
+                display: block;
+            }
+            .prev,
+            .next {
+                cursor: pointer;
+                position: absolute;
+                top: 50%;
+                transform: translateY(-50%);
+                background: rgba(0, 0, 0, 0.5);
+                color: white;
+                padding: 5px;
+                border: none;
+            }
+            .prev {
+                left: 5px;
+            }
+            .next {
+                right: 5px;
+            }
+            .item h3 {
+                margin: 10px 0;
+                font-weight: bold;
+            }
+            .item textarea {
+                width: 100%;
+                height: 80px;
+                margin-top: 10px;
+                padding: 5px;
+                border: none;
+                background: #f1f1f1;
+                resize: none;
+            }
+            .container {
+                max-width: 1200px;
+                margin: auto;
+            }
+            .sold,
+            .reserved {
+                font-weight: bold;
+                margin-bottom: 10px;
+            }
+            .sold {
+                color: red;
+            }
+            .reserved {
+                color: orange;
+            }
+            .filters {
+                margin: 20px 0;
+            }
+            .filter-btn {
+                margin: 5px;
+            }
+            .filter-btn.active {
+                background-color: #1565c0;
+            }
+            #available-btn.active {
+                background-color: #ff684d;
+                color: black;
+            }
+            #available-btn {
+                background-color: #ffeb3b;
+                color: black;
+            }
+            .clear-filter {
+                color: yellow;
+                cursor: pointer;
+            }
+            .category-btn {
+                background-color: #4caf50;
+                padding: 3px 8px;
+                font-size: 12px;
+                border-radius: 5px;
+                color: white;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <h1 class="white-text">el Dublo sale!</h1>
+            <p class="white-text">
+                Siema, kiedy coś Ci się spodoba - uderz do mnie na priv!
+            </p>
+            <div class="filters">
+                <button id="available-btn" class="waves-effect waves-light btn">
+                    Tylko dostępne
+                </button>
+                <button
+                    class="filter-btn waves-effect waves-light btn"
+                    data-category="electronics"
+                >
+                    Elektronika
+                </button>
+                <button
+                    class="filter-btn waves-effect waves-light btn"
+                    data-category="books"
+                >
+                    Książki
+                </button>
+                <button
+                    class="filter-btn waves-effect waves-light btn"
+                    data-category="sport"
+                >
+                    Sport
+                </button>
+                <button
+                    class="filter-btn waves-effect waves-light btn"
+                    data-category="rtvagd"
+                >
+                    RTV/AGD
+                </button>
+                <button
+                    class="filter-btn waves-effect waves-light btn"
+                    data-category="garden"
+                >
+                    Ogród
+                </button>
+                <span class="clear-filter">Wyczyść filtry</span>
+            </div>
+        </div>
+        <div class="gallery" id="gallery"></div>
+
+        <script>
+            const items = [
+                {
+                    name: "Słuchawki nauszne SONY WH-1000XM5 ANC Czarny",
+                    price: "850 PLN",
+                    images: [
+                        "sale/sonywh1000xm5-001.png",
+                    ],
+                    description: "Słuchawki użyte kilkadziesiąt razy, zamieniam je na otwarte AKG bez ANC (osobista preferencja, Soniacz to klasa sama w sobie). Stan jak nówka :)\n Sprzedaję razem z etui, kablem do ładowania usb-a na usb-c oraz kablem na mini-jack",
+                    sold: false,
+                    reserved: false,
+                    category: "electronics",
+                    itemLinkUrl: "https://www.mediaexpert.pl/telewizory-i-rtv/sluchawki/wszystkie-sluchawki/sluchawki-bluetooth-sony-wh1000xm5b-ce7-anc-nauszne-czarne",
+                },
+                {
+                    name: "Ipad 9th gen 64 GB",
+                    price: "1150 PLN (wliczając etui combo touch)",
+                    images: [
+                        "sale/ipad9thgen-001.jpg",
+                    ],
+                    description: "Ipad 9 generacji, sprzedaję razem z Etui Logitech Combo Touch Keyboard z gładzikiem \n" +
+                        "wersja 64 GB, zadbany, po sporadycznym użytkowaniu przez pół roku wymieniony na wyższy model",
+                    sold: false,
+                    reserved: false,
+                    category: "electronics",
+                    itemLinkUrl: "https://www.ceneo.pl/176644330"
+                },
+                {
+                    name: "Xbox One S + pad",
+                    price: "550 PLN",
+                    images: [
+                        "sale/xboxones-001.png",
+                    ],
+                    description: "Konsola z padem (brakuje gumki na lewym analogu)\n" +
+                        "Słychac nieco pracę dysku tarczowego ale poza tym konsola daje radę ;)",
+                    sold: false,
+                    reserved: false,
+                    category: "electronics",
+                    itemLinkUrl: "https://www.xbox.com/pl-PL/consoles/xbox-one-s",
+                },
+                {
+                    name: "Thermomix 5",
+                    price: "5000 PLN",
+                    images: [
+                        "sale/thermomix-001.png",
+                        "sale/thermomix-002.jpeg",
+                        // "sale/thermomix-003.png",
+                    ],
+                    description: "Thermomix wraz z: kopystką, opakowaniem do przenoszenia, nożami do obierania, zestawem do gotowania na parze\n" +
+                        "użyty mniej niż 10 razy - wygląda i pracuje jak nowy, noże bez śladu zużycia",
+                    sold: false,
+                    reserved: false,
+                    category: "rtvagd",
+                    itemLinkUrl: "https://www.xbox.com/pl-PL/consoles/xbox-one-s",
+                },
+                {
+                    name: "Klawiatura Keychrone K2",
+                    price: "280 PLN",
+                    images: [
+                        "sale/keychronek2-001.jpg",
+                    ],
+                    description: "Klawiatura ma dla mnie jednak zbyt wysoki skok więc z żalem się z nią żegnam.\n" +
+                        "Sprzedaję w oryginalnym pudełku z kablem usb-c oraz plastykowym przykryciem",
+                    sold: false,
+                    reserved: false,
+                    category: "electronics",
+                    itemLinkUrl: "https://keychronpoland.com/products/keychron-k2-wireless-mechanical-keyboard",
+                },
+            ];
+
+            const categoryTranslations = {
+                electronics: "Elektronika",
+                books: "Książki",
+                sport: "Sport",
+                rtvagd: "RTV/AGD",
+                garden: "Ogród",
+            };
+
+            const gallery = document.getElementById("gallery");
+            const availableBtn = document.getElementById("available-btn");
+            let selectedCategories = new Set();
+            let onlyAvailable = false;
+
+            function initializeCarousel(itemDiv) {
+                const images = itemDiv.querySelectorAll(".carousel img");
+                const prevBtn = itemDiv.querySelector(".prev");
+                const nextBtn = itemDiv.querySelector(".next");
+                let currentIndex = 0;
+
+                function showImage(index) {
+                    images.forEach((img, i) => {
+                        img.classList.toggle("active", i === index);
+                    });
+                }
+
+                if (prevBtn && nextBtn && images.length > 1) {
+                    prevBtn.addEventListener("click", () => {
+                        currentIndex = (currentIndex - 1 + images.length) % images.length;
+                        showImage(currentIndex);
+                    });
+
+                    nextBtn.addEventListener("click", () => {
+                        currentIndex = (currentIndex + 1) % images.length;
+                        showImage(currentIndex);
+                    });
+                }
+
+                showImage(currentIndex);
+            }
+
+            // Function to render items based on selected filters
+            function renderItems() {
+                gallery.innerHTML = "";
+                items.forEach((item) => {
+                    if (
+                        selectedCategories.size &&
+                        !selectedCategories.has(item.category)
+                    )
+                        return;
+                    if (onlyAvailable && (item.sold || item.reserved)) return;
+
+                    const div = document.createElement("div");
+                    div.classList.add("item");
+                    if (item.sold) div.classList.add("sold-item");
+
+                    let imagesHTML = "";
+                    item.images.forEach((img, index) => {
+                        imagesHTML += `<img src="${img}" class="${index === 0 ? "active" : ""}">`;
+                    });
+
+                    div.innerHTML = `
+                        <h3>${item.name}</h3>
+                        <div class="category-btn">${categoryTranslations[item.category]}</div>
+                        ${item.reserved ? '<p class="reserved">ZAREZERWOWANE</p>' : ""}
+                        ${item.sold ? '<p class="sold">SPRZEDANE</p>' : ""}
+                        <div class="carousel">
+                            <button class="prev waves-effect waves-light btn">&#10094;</button>
+                            ${imagesHTML}
+                            <button class="next waves-effect waves-light btn">&#10095;</button>
+                        </div>
+                        ${item.itemLinkUrl ? `<p><a href="${item.itemLinkUrl}" target="_blank">Link do strony producenta/sklepu</a></p>` : ""}
+                        <p><strong>${item.price}</strong></p>
+                        <textarea readonly>${item.description}</textarea>
+                    `;
+
+                    gallery.appendChild(div);
+                    initializeCarousel(div);
+                });
+            }
+
+            // Filter buttons for categories
+            document.querySelectorAll(".filter-btn").forEach((button) => {
+                button.addEventListener("click", () => {
+                    const category = button.getAttribute("data-category");
+                    if (selectedCategories.has(category)) {
+                        selectedCategories.delete(category);
+                        button.classList.remove("active");
+                    } else {
+                        selectedCategories.add(category);
+                        button.classList.add("active");
+                    }
+                    renderItems();
+                });
+            });
+
+            // Clear filters
+            document
+                .querySelector(".clear-filter")
+                .addEventListener("click", () => {
+                    selectedCategories.clear();
+                    document
+                        .querySelectorAll(".filter-btn")
+                        .forEach((btn) => btn.classList.remove("active"));
+                    onlyAvailable = false;
+                    availableBtn.classList.remove("active");
+                    renderItems();
+                });
+
+            // "Tylko dostępne" button functionality
+            availableBtn.addEventListener("click", () => {
+                onlyAvailable = !onlyAvailable;
+                availableBtn.classList.toggle("active");
+                renderItems();
+            });
+
+            // Initial render
+            renderItems();
+        </script>
+    </body>
+</html>
