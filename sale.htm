@@ -399,20 +399,24 @@
                         imagesHTML += `<img src="${img}" class="${index === 0 ? "active" : ""}">`;
                     });
 
-                    div.innerHTML = `
-                        <h3>${item.name}</h3>
-                        <div class="category-btn">${categoryTranslations[item.category]}</div>
-                        ${item.reserved ? '<p class="reserved">ZAREZERWOWANE</p>' : ""}
-                        ${item.sold ? '<p class="sold">SPRZEDANE</p>' : ""}
-                        <div class="carousel">
-                            <button class="prev waves-effect waves-light btn">&#10094;</button>
-                            ${imagesHTML}
-                            <button class="next waves-effect waves-light btn">&#10095;</button>
-                        </div>
-                        ${item.itemLinkUrl ? `<p><a href="${item.itemLinkUrl}" target="_blank">Link do strony producenta/sklepu</a></p>` : ""}
-                        <p><strong>${item.price}</strong></p>
-                        <textarea readonly>${item.description}</textarea>
-                    `;
+                    const navButtons = item.images.length > 1
+                        ? `<button class="prev waves-effect waves-light btn">&#10094;</button>
+       <button class="next waves-effect waves-light btn">&#10095;</button>`
+                        : "";
+
+                        div.innerHTML = `
+        <h3>${item.name}</h3>
+        <div class="category-btn">${categoryTranslations[item.category]}</div>
+        ${item.reserved ? '<p class="reserved">ZAREZERWOWANE</p>' : ""}
+        ${item.sold ? '<p class="sold">SPRZEDANE</p>' : ""}
+        <div class="carousel">
+            ${navButtons}
+            ${imagesHTML}
+        </div>
+        ${item.itemLinkUrl ? `<p><a href="${item.itemLinkUrl}" target="_blank">Link do strony producenta/sklepu</a></p>` : ""}
+        <p><strong>${item.price}</strong></p>
+        <textarea readonly>${item.description}</textarea>
+    `;
 
                     gallery.appendChild(div);
                     initializeCarousel(div);
